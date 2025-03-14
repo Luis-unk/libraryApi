@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "livro")
 @Data
+@ToString(exclude = "autor")
 public class Livro {
 
     @Id
@@ -33,6 +34,7 @@ public class Livro {
     private BigDecimal preco;
 
     @ManyToOne(
+//            cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
     @JoinColumn(name = "id_autor")

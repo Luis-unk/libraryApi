@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @SpringBootTest
@@ -67,6 +68,17 @@ class LivroRepositoryTest {
 
         System.out.println("Livro: ");
         System.out.println(livro.getTitulo());
+    }
 
+    @Test
+    void pesquisaPorTituloTest(){
+        List<Livro> lista = repository.findByTitulo("UFO");
+        lista.forEach(System.out::println);
+    }
+
+    @Test
+    void pesquisaPorIsbnTest(){
+        List<Livro> lista = repository.findByIsbn("98999-898");
+        lista.forEach(System.out::println);
     }
 }

@@ -1,8 +1,0 @@
-spring:
-  application:
-    name: libraryapi
-  datasource:
-    url: jdbc:oracle:thin:@ERP_ACADEMY_PDB_S003TRN
-    username: LUISSYS
-    password: estagio1234
-    driver-class-name: oracle.jdbc.OracleDriver
