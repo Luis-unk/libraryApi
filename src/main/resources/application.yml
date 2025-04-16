@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/XEPDB1
+    username: DEV.LUIS
+    password: developer
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.format_sql: true

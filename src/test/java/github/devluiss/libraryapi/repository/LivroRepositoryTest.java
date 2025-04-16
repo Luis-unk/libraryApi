@@ -81,4 +81,11 @@ class LivroRepositoryTest {
         List<Livro> lista = repository.findByIsbn("98999-898");
         lista.forEach(System.out::println);
     }
+    @Test
+    void pesquisaPorTituloEPrecoTest(){
+        var preco = BigDecimal.valueOf(220.00);
+        List<Livro> lista = repository.findByTituloAndPreco("Conhecendo os misterios", preco);
+        lista.forEach(System.out::println);
+    }
+
 }
