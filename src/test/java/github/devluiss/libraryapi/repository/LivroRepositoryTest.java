@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @SpringBootTest
 class LivroRepositoryTest {
 
@@ -63,7 +62,7 @@ class LivroRepositoryTest {
     @Test
     @Transactional
     void buscarLivroTest(){
-        int id = 5;
+        int id = 1;
         Livro livro = repository.findById(id).orElse(null);
 
         System.out.println("Livro: ");

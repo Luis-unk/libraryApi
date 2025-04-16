@@ -26,14 +26,14 @@ public interface LivroRepository extends JpaRepository<Livro, Integer> {
 
     List<Livro> findByTituloOrPreco(String titulo, BigDecimal preco);
 
-    @Query("""
-            SELECT l.genero
-            FROM Livro l
-            JOIN l.autor a WHERE
-            a.nacionalidade = `Brasileira`
-            ORDER BY l.genero
-            """)
-    List<String> listarGenerosAutoresBrasileiros();
+//    @Query("""
+//            SELECT l.genero
+//            FROM Livro l
+//            JOIN l.autor a WHERE
+//            a.nacionalidade = `Brasileira`
+//            ORDER BY l.genero
+//            """)
+//    List<String> listarGenerosAutoresBrasileiros();
 
     @Query("SELECT l FROM Livro l WHERE l.genero = :genero ORDER BY :paramOrdenacao")
     List<Livro> findByGenero(
