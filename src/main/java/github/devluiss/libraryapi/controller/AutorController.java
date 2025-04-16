@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.swing.text.html.Option;
 import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,6 +51,18 @@ public class AutorController {
             return ResponseEntity.ok(dto);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deletar(@PathVariable("id") String id){
+        var idAutor = UUID.fromString(id);
+        Optional<Autor> autorOptional = service.obterPorId(idAutor);
+
+        if(autorOptional.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        service.deletar(autorOptional.get());
+        return ResponseEntity.noContent().build();
     }
 
 }
