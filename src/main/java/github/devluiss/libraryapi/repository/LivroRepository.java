@@ -49,4 +49,6 @@ public interface LivroRepository extends JpaRepository<Livro, Integer> {
     @Transactional //update , delete, insert deve usar transactional -> commit ou rollback
     @Query("DELETE FROM Livro WHERE genero = ?1")
     void deleteByGenero(GeneroLivro genero);
+
+    boolean existsByAutor(Autor autor);
 }

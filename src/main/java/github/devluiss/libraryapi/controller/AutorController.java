@@ -2,9 +2,11 @@ package github.devluiss.libraryapi.controller;
 
 import github.devluiss.libraryapi.controller.dto.AutorDTO;
 import github.devluiss.libraryapi.controller.dto.ErroResposta;
+import github.devluiss.libraryapi.exceptions.OperacaoNaoPermitidaException;
 import github.devluiss.libraryapi.exceptions.RegistroDuplicadoException;
 import github.devluiss.libraryapi.model.Autor;
 import github.devluiss.libraryapi.service.AutorService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,7 +28,7 @@ public class AutorController {
     }
 
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody AutorDTO autor) {
+    public ResponseEntity<?> salvar(@RequestBody @Valid AutorDTO autor) {
         try {
             Autor autorEntidade = autor.mapearParaAutor();
             service.salvar(autorEntidade);
@@ -61,15 +63,20 @@ public class AutorController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deletar(@PathVariable("id") String id) {
-        var idAutor = UUID.fromString(id);
-        Optional<Autor> autorOptional = service.obterPorId(idAutor);
+    public ResponseEntity<?> deletar(@PathVariable("id") String id) {
+        try {
+            var idAutor = UUID.fromString(id);
+            Optional<Autor> autorOptional = service.obterPorId(idAutor);
 
-        if (autorOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            if (autorOptional.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            service.deletar(autorOptional.get());
+            return ResponseEntity.noContent().build();
+        } catch (OperacaoNaoPermitidaException e){
+            var erroDTO = ErroResposta.respostaPadrao(e.getMessage());
+            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
-        service.deletar(autorOptional.get());
-        return ResponseEntity.noContent().build();
     }
 
     //usando o value no requestParam pq os valores não são obrgatórios.

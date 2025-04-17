@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @SpringBootTest
 class LivroRepositoryTest {
@@ -32,7 +33,7 @@ class LivroRepositoryTest {
         livro.setTitulo("UFO");
         livro.setDataPublicacao(LocalDate.of(2024, 3, 12));
 
-        Autor autor = autorRepository.findById(3).orElse(null);
+        Autor autor = autorRepository.findById(UUID.fromString("f77e5406-81e4-40c7-9835-56edae600525")).orElse(null);
 
         livro.setAutor(autor);
         repository.save(livro);
