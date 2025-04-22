@@ -5,6 +5,8 @@ import github.devluiss.libraryapi.model.Autor;
 import github.devluiss.libraryapi.repository.AutorRepository;
 import github.devluiss.libraryapi.repository.LivroRepository;
 import github.devluiss.libraryapi.validator.AutorValidator;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -64,6 +66,25 @@ public class AutorService {
         }
 
         return repository.findAll();
+    }
+
+    /*QueryByExampleExecutor -> Executa querys através de examples
+    Examples -> utiliza apenas os dados que estão preenchidos em um objeto para executar uma query
+    */
+    public List<Autor> pesquisaByExample(String nome, String nacionalidade){
+        var autor = new Autor();
+        autor.setNome(nome);
+        autor.setNacionalidade(nacionalidade);
+
+        //Matcher -> Funciona como filtros de pesquisa para o Example
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+
+        Example<Autor> autorExample = Example.of(autor, matcher);
+        return repository.findAll(autorExample);
     }
 
     private boolean possuiLivro(Autor autor){
