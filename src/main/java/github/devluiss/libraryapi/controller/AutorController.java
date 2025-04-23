@@ -2,6 +2,7 @@ package github.devluiss.libraryapi.controller;
 
 import github.devluiss.libraryapi.controller.dto.AutorDTO;
 import github.devluiss.libraryapi.controller.dto.ErroResposta;
+import github.devluiss.libraryapi.controller.mappers.AutorMapper;
 import github.devluiss.libraryapi.exceptions.OperacaoNaoPermitidaException;
 import github.devluiss.libraryapi.exceptions.RegistroDuplicadoException;
 import github.devluiss.libraryapi.model.Autor;
@@ -22,22 +23,24 @@ import java.util.stream.Collectors;
 public class AutorController {
 
     private final AutorService service;
+    private final AutorMapper mapper;
 
-    public AutorController(AutorService service) {
+    public AutorController(AutorService service, AutorMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody @Valid AutorDTO autor) {
+    public ResponseEntity<?> salvar(@RequestBody @Valid AutorDTO dto) {
         try {
-            Autor autorEntidade = autor.mapearParaAutor();
-            service.salvar(autorEntidade);
+            Autor autor = mapper.toEntity(dto);
+            service.salvar(autor);
 
             //http://localhost:8080/autores/uuid
             URI location = ServletUriComponentsBuilder
                     .fromCurrentRequest()
                     .path("{id}")
-                    .buildAndExpand(autorEntidade.getId())
+                    .buildAndExpand(autor.getId())
                     .toUri();
 
             return ResponseEntity.created(location).build();
@@ -50,16 +53,13 @@ public class AutorController {
     @GetMapping("{id}")
     public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable String id) {
         var idAutor = UUID.fromString(id);
-        Optional<Autor> autorOptional = service.obterPorId(idAutor);
-        if (autorOptional.isPresent()) {
-            Autor autor = autorOptional.get();
-            AutorDTO dto = new AutorDTO(
-                    autor.getId(), autor.getNome(),
-                    autor.getDataNascimento(),
-                    autor.getNacionalidade());
-            return ResponseEntity.ok(dto);
-        }
-        return ResponseEntity.notFound().build();
+
+        return service
+                .obterPorId(idAutor)
+                .map(autor -> {
+                    AutorDTO dto = mapper.toDTO(autor);
+                    return ResponseEntity.ok(dto);
+                }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("{id}")
@@ -73,7 +73,7 @@ public class AutorController {
             }
             service.deletar(autorOptional.get());
             return ResponseEntity.noContent().build();
-        } catch (OperacaoNaoPermitidaException e){
+        } catch (OperacaoNaoPermitidaException e) {
             var erroDTO = ErroResposta.respostaPadrao(e.getMessage());
             return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
@@ -121,5 +121,4 @@ public class AutorController {
             return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
     }
-
 }
