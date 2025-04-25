@@ -17,14 +17,14 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/livros")
 @RequiredArgsConstructor
-public class LivroController implements GenericController{
+public class LivroController implements GenericController {
 
     private final LivroService livroService;
     private final LivroMapper mapper;
 
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody @Valid CadastroLivroDTO dto){
-        try{
+    public ResponseEntity<?> salvar(@RequestBody @Valid CadastroLivroDTO dto) {
+        try {
             //mapear dto para a entidade
             Livro livro = mapper.toEntity(dto);
             //enviar a entidade para o service validar e salvar na base
@@ -33,7 +33,7 @@ public class LivroController implements GenericController{
             var url = gerarHeaderLocation(livro.getId());
             //retornar codigo created com header location
             return ResponseEntity.created(url).build();
-        }catch (RegistroDuplicadoException e) {
+        } catch (RegistroDuplicadoException e) {
             var erroDTO = ErroResposta.conflito(e.getMessage());
             return ResponseEntity.status(erroDTO.status()).body(erroDTO);
         }
@@ -42,7 +42,7 @@ public class LivroController implements GenericController{
     @GetMapping("{id}")
     public ResponseEntity<ResultadoPesquisaLivroDTO> obterDetalhes(
             @PathVariable("id") String id
-    ){
+    ) {
         return livroService.obterPorId(UUID.fromString(id))
                 .map(livro -> {
                     var dto = mapper.toDTO(livro);
@@ -50,4 +50,12 @@ public class LivroController implements GenericController{
                 }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> deletar(@PathVariable("id") String id) {
+        return livroService.obterPorId(UUID.fromString(id))
+                .map(livro -> {
+                    livroService.deletar(livro);
+                    return ResponseEntity.noContent().build();
+                }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 }
