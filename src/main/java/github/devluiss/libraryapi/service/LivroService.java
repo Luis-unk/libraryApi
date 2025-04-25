@@ -1,10 +1,13 @@
 package github.devluiss.libraryapi.service;
 
+import github.devluiss.libraryapi.model.GeneroLivro;
 import github.devluiss.libraryapi.model.Livro;
 import github.devluiss.libraryapi.repository.LivroRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -24,5 +27,12 @@ public class LivroService {
 
     public void deletar(Livro livro){
         repository.delete(livro);
+    }
+
+    //isbn, titulo, nome autor, ano de publicação
+    public List<Livro> pesquisa(String isbn, String nomeAutor, GeneroLivro genero, Integer anoPublicacao){
+
+        Specification<Livro> specs = null;
+        return repository.findAll(specs);
     }
 }

@@ -4,6 +4,7 @@ import github.devluiss.libraryapi.model.Autor;
 import github.devluiss.libraryapi.model.GeneroLivro;
 import github.devluiss.libraryapi.model.Livro;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface LivroRepository extends JpaRepository<Livro, Integer> {
+public interface LivroRepository extends JpaRepository<Livro, Integer>, JpaSpecificationExecutor<Livro> {
 
     // Querry Method
     // select * form livro where id_autor = id;
