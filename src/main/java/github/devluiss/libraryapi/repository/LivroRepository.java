@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public interface LivroRepository extends JpaRepository<Livro, Integer> {
 
@@ -51,4 +53,6 @@ public interface LivroRepository extends JpaRepository<Livro, Integer> {
     void deleteByGenero(GeneroLivro genero);
 
     boolean existsByAutor(Autor autor);
+
+    Optional<Livro> findById(UUID id);
 }
