@@ -1,7 +1,10 @@
 package github.devluiss.libraryapi.config;
 
+import github.devluiss.libraryapi.security.CustomUserDetailsService;
+import github.devluiss.libraryapi.service.UsuarioService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,7 +32,14 @@ public class SecurityConfiguration {
                 })
                 .httpBasic(Customizer.withDefaults()) //http basic caso uso postman
                 .authorizeHttpRequests( authorize -> {
-                        authorize.anyRequest().authenticated();
+                    authorize.requestMatchers("/login").permitAll();
+                    authorize.requestMatchers(HttpMethod.POST,"/usuarios/**").permitAll();
+                    authorize.requestMatchers(HttpMethod.DELETE, "/autores/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.POST,"/autores/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.PUT,"/autores/**").hasRole("ADMIN");
+                    authorize.requestMatchers(HttpMethod.GET,"/autores/**").hasAnyRole("USER", "ADMIN");
+                    authorize.requestMatchers("/livros/**").hasAnyRole("USER", "ADMIN");
+                    authorize.anyRequest().authenticated();
                 })
                 .build();
     }
@@ -40,20 +50,22 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public UserDetailsService userDatailsService(PasswordEncoder encoder){
+    public UserDetailsService userDatailsService(UsuarioService usuarioService){
 
-        UserDetails user1 = User.builder()
-                .username("usuario")
-                .password(encoder.encode("123"))
-                .roles("USER") //geralmente caixa alta
-                .build();
-
-        UserDetails user2 = User.builder()
-                .username("admin")
-                .password(encoder.encode("123"))
-                .roles("ADMIN") //geralmente caixa alta
-                .build();
-
-        return new InMemoryUserDetailsManager(user1, user2);
+//        UserDetails user1 = User.builder()
+//                .username("usuario")
+//                .password(encoder.encode("123"))
+//                .roles("USER") //geralmente caixa alta
+//                .build();
+//
+//        UserDetails user2 = User.builder()
+//                .username("admin")
+//                .password(encoder.encode("123"))
+//                .roles("ADMIN") //geralmente caixa alta
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user1, user2);
+        return new CustomUserDetailsService(usuarioService);
     }
+
 }
