@@ -2,8 +2,10 @@ package github.devluiss.libraryapi.service;
 
 import github.devluiss.libraryapi.exceptions.OperacaoNaoPermitidaException;
 import github.devluiss.libraryapi.model.Autor;
+import github.devluiss.libraryapi.model.Usuario;
 import github.devluiss.libraryapi.repository.AutorRepository;
 import github.devluiss.libraryapi.repository.LivroRepository;
+import github.devluiss.libraryapi.security.SecurityService;
 import github.devluiss.libraryapi.validator.AutorValidator;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -19,17 +21,20 @@ public class AutorService {
     private final AutorRepository repository;
 
     private final AutorValidator validator;
-
     private final LivroRepository livroRepository;
+    private final SecurityService securityService;
 
-    public AutorService(AutorRepository repository, AutorValidator validator, LivroRepository livroRepository){
+    public AutorService(AutorRepository repository, AutorValidator validator, LivroRepository livroRepository,SecurityService securityService){
         this.repository = repository;
         this.validator = validator;
         this.livroRepository = livroRepository;
+        this.securityService = securityService;
     }
 
     public Autor salvar(Autor autor){
         validator.validar(autor);
+        Usuario usuario = securityService.obterUsuarioLogado();
+        autor.setUsuario(usuario);
         return repository.save(autor);
     }
 

@@ -3,9 +3,15 @@ package github.devluiss.libraryapi.controller;
 import github.devluiss.libraryapi.controller.dto.AutorDTO;
 import github.devluiss.libraryapi.controller.mappers.AutorMapper;
 import github.devluiss.libraryapi.model.Autor;
+import github.devluiss.libraryapi.model.Usuario;
+import github.devluiss.libraryapi.security.SecurityService;
 import github.devluiss.libraryapi.service.AutorService;
+import github.devluiss.libraryapi.service.UsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -27,15 +33,17 @@ public class AutorController implements GenericController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<?> salvar(@RequestBody @Valid AutorDTO dto) {
-            Autor autor = mapper.toEntity(dto);
-            service.salvar(autor);
-            //http://localhost:8080/autores/uuid
-            URI location = gerarHeaderLocation(autor.getId());
-            return ResponseEntity.created(location).build();
+        Autor autor = mapper.toEntity(dto);
+        service.salvar(autor);
+        //http://localhost:8080/autores/uuid
+        URI location = gerarHeaderLocation(autor.getId());
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('GERENTE', 'OPERADOR')")
     public ResponseEntity<AutorDTO> obterDetalhes(@PathVariable("id") String id) {
         var idAutor = UUID.fromString(id);
         return service
@@ -47,6 +55,7 @@ public class AutorController implements GenericController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<?> deletar(@PathVariable("id") String id) {
         var idAutor = UUID.fromString(id);
         Optional<Autor> autorOptional = service.obterPorId(idAutor);
@@ -61,6 +70,7 @@ public class AutorController implements GenericController {
     //usando o value no requestParam pq os valores não são obrgatórios.
     //se fosse não precisaria.  -> required = false: signfica que não é obrigatório
     @GetMapping
+    @PreAuthorize("hasAnyRole('GERENTE', 'OPERADOR')")
     public ResponseEntity<List<AutorDTO>> pesquisar(
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "nacionalidade", required = false) String nacionalidade) {
@@ -73,6 +83,7 @@ public class AutorController implements GenericController {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<?> atualizar(
             @PathVariable("id") String id,
             @RequestBody @Valid AutorDTO dto) {

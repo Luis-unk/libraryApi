@@ -2,7 +2,9 @@ package github.devluiss.libraryapi.service;
 
 import github.devluiss.libraryapi.model.GeneroLivro;
 import github.devluiss.libraryapi.model.Livro;
+import github.devluiss.libraryapi.model.Usuario;
 import github.devluiss.libraryapi.repository.LivroRepository;
+import github.devluiss.libraryapi.security.SecurityService;
 import github.devluiss.libraryapi.validator.LivroValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,9 +24,12 @@ public class LivroService {
 
     private final LivroRepository repository;
     private final LivroValidator validator;
+    private final SecurityService securityService;
 
     public Livro salvar(Livro livro) {
         validator.validar(livro);
+        Usuario usuario = securityService.obterUsuarioLogado();
+        livro.setUsuario(usuario);
         return repository.save(livro);
     }
 
