@@ -70,5 +70,4 @@ public class SecurityConfiguration {
 //        return new InMemoryUserDetailsManager(user1, user2);
         return new CustomUserDetailsService(usuarioService);
     }
-
 }
