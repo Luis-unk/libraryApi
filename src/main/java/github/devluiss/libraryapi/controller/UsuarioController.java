@@ -3,6 +3,7 @@ package github.devluiss.libraryapi.controller;
 import github.devluiss.libraryapi.controller.dto.UsuarioDTO;
 import github.devluiss.libraryapi.controller.mappers.UsuarioMapper;
 import github.devluiss.libraryapi.service.UsuarioService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,7 @@ public class UsuarioController {
     private final UsuarioMapper mapper;
 
     @PostMapping
-    public void salvar(@RequestBody UsuarioDTO dto){
+    public void salvar(@Valid @RequestBody UsuarioDTO dto){
         var usuario = mapper.toEntity(dto);
         service.salvar(usuario);
     }

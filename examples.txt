@@ -9,3 +9,7 @@ docker run --name librarydb -p 5432:5432 -e POSTGRES_PASSWORD=postgres -e POSTGR
 
 -------- CHECANDO PORTA ---------
 netstat -aof | findstr 5432
+
+ADICIONAR VARIAVEIS DE AMBIENTE:
+GOOGLE_CLIENT_ID;
+GOOGLE_CLIENT_SECRET;

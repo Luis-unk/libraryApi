@@ -33,7 +33,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         boolean senhasBatem = encoder.matches(senhaDigitada, senhaCriptografada);
 
         if(senhasBatem){
-            new CustomAuthentication(usuarioEncontrado);
+            return new CustomAuthentication(usuarioEncontrado);
         }
 
         throw new UsernameNotFoundException("Usuário ou senha incorretos!");
